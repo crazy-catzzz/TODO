@@ -24,12 +24,15 @@ export function add_user(username : string, password : string) : number {
     return status;
 };
 
-// TODO: Ritornare liste
 export function get_user_by_ID(id : number) : any {
     const users_query : string = `SELECT id, username FROM users WHERE id=${id};`;
+    const lists_query : string = `SELECT id, list_name FROM lists WHERE owner_id=${id};`;
 
     // Eseguo la query
-    const user = db.query(users_query).get();
+    const user : any = db.query(users_query).get();
+    const lists : any = db.query(lists_query).get();
+    
+    user.lists = lists;
 
     return user;
 }

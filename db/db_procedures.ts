@@ -1,6 +1,6 @@
 import { Database } from "bun:sqlite";
 
-// Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le sotred procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
+// Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le stored procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
 
 const db = new Database(Bun.env.DB_PATH!);
 

@@ -29,6 +29,7 @@ app.post(user_endpoint, (req, res) => {
 });
 app.get(`${user_endpoint}/:id`, (req, res) => {
     // Prendo l'ID dai parametri e lo converto a integer
+    // Prendendo l'ID dai parametri, avrò un ID scritto come ":id", lasciandolo così non posso utilizzare la funzione parseInt()
     const id : number = parseInt(req.params.id.substring(1));
     
     const user = procedures.get_user_by_ID(id);

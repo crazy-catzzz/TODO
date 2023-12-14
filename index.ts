@@ -37,6 +37,12 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     if (!user) res.sendStatus(404); // 404 Not Found
     else res.status(200).send(user);
 });
+app.put(user_endpoint, (req, res) => {
+    res.sendStatus(501);
+});
+app.delete(user_endpoint, (req, res) => {
+    res.sendStatus(501)
+});
 
 // Listen on port
 const port = 8080;

@@ -21,7 +21,11 @@ app.post(user_endpoint, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     
-    res.sendStatus(procedures.add_user(username, password));
+    if(procedures.add_user(username, password) == 0) {
+        res.sendStatus(200); // 200 OK
+    } else {
+        res.sendStatus(500); // 500 Internal Server Error
+    }
 });
 app.get(`${user_endpoint}/:id`, (req, res) => {
     // Prendo l'ID dai parametri e lo converto a integer
@@ -29,7 +33,7 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     
     const user = procedures.get_user_by_ID(id);
     
-    if (!user) res.sendStatus(404);
+    if (!user) res.sendStatus(404); // 404 Not Found
     else res.status(200).send(user);
 });
 

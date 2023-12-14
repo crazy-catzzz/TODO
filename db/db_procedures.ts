@@ -5,7 +5,7 @@ import { Database } from "bun:sqlite";
 const db = new Database(Bun.env.DB_PATH!);
 
 export function add_user(username : string, password : string) : number {
-    let status : number = 200; // 200 OK
+    let status : number = 0; // STATUS SUCCESS
     const cost_factor : number = 10;
     
     // Hash password con sale randomizzato
@@ -17,7 +17,7 @@ export function add_user(username : string, password : string) : number {
         db.query(`INSERT INTO users (username, password_hash) VALUES ("${username}", "${hash}");`)
         .run();
     }).catch(err => {
-        status = 500; // 500 Internal Server Error
+        status = 1; // STATUS FAILURE
         console.error(err);
     });
 

@@ -35,4 +35,4 @@ export function get_user_by_ID(id : number) : any {
     user.lists = lists;
 
     return user;
-}
+};

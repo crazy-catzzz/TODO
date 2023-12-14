@@ -21,11 +21,13 @@ app.post(user_endpoint, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     
-    if(procedures.add_user(username, password) == 0) {
-        res.sendStatus(200); // 200 OK
-    } else {
-        res.sendStatus(500); // 500 Internal Server Error
-    }
+    procedures.add_user(username, password).then(exit => {
+        if(exit == 0) {
+            res.sendStatus(200); // 200 OK
+        } else {
+            res.sendStatus(500); // 500 Internal Server Error
+        }
+    })
 });
 app.get(`${user_endpoint}/:id`, (req, res) => {
     // Prendo l'ID dai parametri e lo converto a integer
@@ -59,7 +61,10 @@ app.post(login_endpoint, (req, res) => {
     const password = req.body.password;
 
     procedures.validate_user(username, password).then(token_obj => {
-        if (token_obj.status != 0) {
+        
+        if (!token_obj) {
+            res.sendStatus(404); // 404 Not Found
+        } else if (token_obj.status != 0) {
             res.sendStatus(500); // 500 Internal Server Error
         } else if (token_obj.token == "") {
             res.sendStatus(403); // 403 Unauthorized

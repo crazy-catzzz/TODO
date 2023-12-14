@@ -1,4 +1,3 @@
-import { hash } from "bun";
 import { Database } from "bun:sqlite";
 
 // Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le stored procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
@@ -7,22 +6,23 @@ import { Database } from "bun:sqlite";
 
 const db = new Database(Bun.env.DB_PATH!);
 
-export function add_user(username : string, password : string) : number {
+export async function add_user(username : string, password : string) : Promise<number> {
     let status : number = 0; // STATUS SUCCESS
     const cost_factor : number = 10;
     
     // Hash password con sale randomizzato
-    Bun.password.hash(password, {
-        algorithm: "bcrypt",
-        cost: cost_factor,
-    }).then(hash => {
+    try {
+        const hash = await Bun.password.hash(password, {
+            algorithm: "bcrypt",
+            cost: cost_factor,
+        })
         // Inserisci coppia username e hash nel DB
         db.query(`INSERT INTO users (username, password_hash) VALUES ("${username}", "${hash}");`)
         .run();
-    }).catch(err => {
+    } catch(err) {
         status = 1; // STATUS FAILURE
         console.error(err);
-    });
+    }
 
     return status;
 };

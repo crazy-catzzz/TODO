@@ -1,4 +1,5 @@
 import express from "express";
+import { add_user } from "./db/db_procedures.ts";
 
 const app = express();
 
@@ -19,8 +20,9 @@ app.post("/api/v1/user", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     
-    
+    res.sendStatus(add_user(username, password));
 })
+
 
 // Listen on port
 const port = 8080;

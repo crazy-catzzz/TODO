@@ -30,7 +30,7 @@ export function get_user_by_ID(id : number) : any {
 
     // Eseguo la query
     const user : any = db.query(users_query).get();
-    const lists : any = db.query(lists_query).get();
+    const lists : any = db.query(lists_query).all();
     
     user.lists = lists;
 

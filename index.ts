@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 // Endpoint /api/v1/user
-const user_endpoint = "/api/v1/user"
+const user_endpoint : string = "/api/v1/user";
 app.post(user_endpoint, (req, res) => {
     /*
     il body della richiesta di creazione utente è circa così:
@@ -42,6 +42,31 @@ app.put(user_endpoint, (req, res) => {
 });
 app.delete(user_endpoint, (req, res) => {
     res.sendStatus(501)
+});
+
+// Endpoint /api/v1/login
+const login_endpoint : string = "/api/v1/login";
+app.post(login_endpoint, (req, res) => {
+    /*
+    Il body di una richiesta di login è così:
+    {
+        "username": "user",
+        "password": "pass"
+    }
+    */
+
+    const username = req.body.username;
+    const password = req.body.password;
+
+    procedures.validate_user(username, password).then(token_obj => {
+        if (token_obj.status != 0) {
+            res.sendStatus(500); // 500 Internal Server Error
+        } else if (token_obj.token == "") {
+            res.sendStatus(403); // 403 Unauthorized
+        } else {
+            res.status(200).send({token: token_obj.token}); // 200 OK
+        }
+    });
 });
 
 // Listen on port

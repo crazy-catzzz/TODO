@@ -2,7 +2,9 @@ CREATE TABLE users (
     id integer PRIMARY KEY AUTOINCREMENT,
     username text NOT NULL,
     password_hash text NOT NULL,
-    creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+    creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT unique_username UNIQUE(username)
 );
 CREATE TABLE lists (
     id integer PRIMARY KEY AUTOINCREMENT,

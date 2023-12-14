@@ -22,4 +22,14 @@ export function add_user(username : string, password : string) : number {
     });
 
     return status;
+};
+
+// TODO: Ritornare liste
+export function get_user_by_ID(id : number) : any {
+    const users_query : string = `SELECT id, username FROM users WHERE id=${id};`;
+
+    // Eseguo la query
+    const user = db.query(users_query).get();
+
+    return user;
 }

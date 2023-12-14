@@ -1,5 +1,5 @@
 import express from "express";
-import { add_user } from "./db/db_procedures.ts";
+import * as procedures from "./db/db_procedures.ts";
 
 const app = express();
 
@@ -7,8 +7,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 
-// Endpoint POST /api/v1/user
-app.post("/api/v1/user", (req, res) => {
+// Endpoint /api/v1/user
+const user_endpoint = "/api/v1/user"
+app.post(user_endpoint, (req, res) => {
     /*
     il body della richiesta di creazione utente è circa così:
     {
@@ -20,9 +21,17 @@ app.post("/api/v1/user", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     
-    res.sendStatus(add_user(username, password));
-})
-
+    res.sendStatus(procedures.add_user(username, password));
+});
+app.get(`${user_endpoint}/:id`, (req, res) => {
+    // Prendo l'ID dai parametri e lo converto a integer
+    const id : number = parseInt(req.params.id.substring(1));
+    
+    const user = procedures.get_user_by_ID(id);
+    
+    if (!user) res.sendStatus(404);
+    else res.status(200).send(user);
+});
 
 // Listen on port
 const port = 8080;

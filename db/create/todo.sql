@@ -20,7 +20,7 @@ CREATE TABLE todos (
     id integer,
     list_id integer,
     todo_name text NOT NULL,
-    completion_status integer DEFAULT 0 NOT NULL,
+    completion_status integer NOT NULL DEFAULT 0,
     creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     visibility_level integer NOT NULL DEFAULT 1, -- 0: private, 1: public

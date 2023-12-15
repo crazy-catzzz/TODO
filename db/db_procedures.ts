@@ -1,4 +1,5 @@
 import { Database } from "bun:sqlite";
+import * as auth from "../auth/auth_helpers.ts";
 
 // Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le stored procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
 
@@ -12,10 +13,7 @@ export async function add_user(username : string, password : string) : Promise<n
     
     // Hash password con sale randomizzato
     try {
-        const hash = await Bun.password.hash(password, {
-            algorithm: "bcrypt",
-            cost: cost_factor,
-        })
+        const hash = await auth.create_hash(password);
         // Inserisci coppia username e hash nel DB
         db.query(`INSERT INTO users (username, password_hash) VALUES ("${username}", "${hash}");`)
         .run();
@@ -49,13 +47,15 @@ export async function validate_user(username : string, password : string) : Prom
     // Ottengo la password hashata dal DB
     const hash_obj : any = db.query(hash_query).get();
     if (!hash_obj) return undefined;
+    
+    const password_hash = hash_obj.password_hash;
 
     // Confronto la password con l'hash e ritorno un token di accesso se combaciano
     let token : string = "";
     let status : number = 0; // STATUS SUCCESS
     
     try {
-        let match = await Bun.password.verify(password, hash_obj.password_hash, "bcrypt");
+        let match = await auth.compare_hash(password, password_hash)
         if (match) {
             token = "token molto figo";
         }

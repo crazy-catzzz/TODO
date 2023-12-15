@@ -67,7 +67,7 @@ app.post(login_endpoint, (req, res) => {
         } else if (token_obj.status != 0) {
             res.sendStatus(500); // 500 Internal Server Error
         } else if (token_obj.token == "") {
-            res.sendStatus(403); // 403 Unauthorized
+            res.sendStatus(401); // 401 Unauthorized
         } else {
             res.status(200).send({token: token_obj.token}); // 200 OK
         }

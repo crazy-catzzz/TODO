@@ -3,6 +3,7 @@ CREATE TABLE users (
     username text NOT NULL,
     password_hash text NOT NULL,
     creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    permission_level integer NOT NULL DEFAULT 0, -- 0: normal user 1: admin
 
     CONSTRAINT unique_username UNIQUE(username)
 );
@@ -22,6 +23,7 @@ CREATE TABLE todos (
     completion_status integer DEFAULT 0 NOT NULL,
     creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    visibility_level integer NOT NULL DEFAULT 1, -- 0: private, 1: public
     
     PRIMARY KEY (id, list_id),
     FOREIGN KEY (list_id) REFERENCES lists(id)

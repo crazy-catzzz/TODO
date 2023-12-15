@@ -28,7 +28,7 @@ export async function add_user(username : string, password : string) : Promise<n
 // Utilizzando any come tipo vado direttamente contro il motivo dell'esistenza di TypeScript, tuttavia non effettuo troppe operazioni con questo oggetto anonimo
 // Forse andrò a creare dei DTO per salvaguardare la type safety
 export function get_user_by_ID(id : number) : any {
-    const users_query : string = `SELECT id, username FROM users WHERE id=${id};`;
+    const users_query : string = `SELECT id, username, permission_level FROM users WHERE id=${id};`;
     const lists_query : string = `SELECT id, list_name FROM lists WHERE owner_id=${id};`;
 
     // Eseguo la query

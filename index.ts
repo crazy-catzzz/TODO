@@ -1,5 +1,6 @@
 import express from "express";
 import * as procedures from "./db/db_procedures.ts";
+import { authenticate } from "./middleware/auth.ts";
 
 const app = express();
 
@@ -39,8 +40,9 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     if (!user) res.sendStatus(404); // 404 Not Found
     else res.status(200).send(user);
 });
-app.put(user_endpoint, (req, res) => {
-    res.sendStatus(501);
+app.put(user_endpoint, authenticate, (req, res) => {
+    console.log(req.body.user);
+    res.sendStatus(200);
 });
 app.delete(user_endpoint, (req, res) => {
     res.sendStatus(501)

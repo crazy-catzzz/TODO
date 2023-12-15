@@ -42,13 +42,13 @@ export function get_user_by_ID(id : number) : any {
 
 // Asincrona perché devo ritornare un valore per cui aspetto
 export async function validate_user(username : string, password : string) : Promise<any> {
-    const hash_query = `SELECT password_hash FROM users WHERE username="${username}"`;
-    
+    const user_query = `SELECT password_hash, id FROM users WHERE username="${username}"`;
+
     // Ottengo la password hashata dal DB
-    const hash_obj : any = db.query(hash_query).get();
-    if (!hash_obj) return undefined;
+    const user_obj : any = db.query(user_query).get();
+    if (!user_obj) return undefined;
     
-    const password_hash = hash_obj.password_hash;
+    const password_hash = user_obj.password_hash;
 
     // Confronto la password con l'hash e ritorno un token di accesso se combaciano
     let token : string = "";
@@ -57,7 +57,8 @@ export async function validate_user(username : string, password : string) : Prom
     try {
         let match = await auth.compare_hash(password, password_hash)
         if (match) {
-            token = auth.generate_access_token(username);
+            // Genera token di accesso
+            token = auth.generate_access_token(user_obj.id);
         }
     } catch(err) {
         console.error(err);

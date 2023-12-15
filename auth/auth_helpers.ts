@@ -19,8 +19,8 @@ export async function compare_hash(password : string, hash : string) : Promise<b
 
 // AUTENTICAZIONE JWT
 
-export function generate_access_token(username : string) : any {
-    return jwt.sign({username: username}, Bun.env.TOKEN_SECRET!, {
+export function generate_access_token(id : number) : any {
+    return jwt.sign({id: id}, Bun.env.TOKEN_SECRET!, {
         expiresIn: "2h", // Scade in 2 ore
     });
 };

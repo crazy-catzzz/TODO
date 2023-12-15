@@ -1,3 +1,9 @@
+// Funzioni helper utili per hashing password e autenticazione
+
+import jwt from "jsonwebtoken";
+
+// HASHING
+
 export async function create_hash(password : string) : Promise<string> {
     const cost_factor : number = 10;
 
@@ -9,4 +15,12 @@ export async function create_hash(password : string) : Promise<string> {
 
 export async function compare_hash(password : string, hash : string) : Promise<boolean> {
     return await Bun.password.verify(password, hash, "bcrypt");
-}
+};
+
+// AUTENTICAZIONE JWT
+
+export function generate_access_token(username : string) : any {
+    return jwt.sign({username: username}, Bun.env.TOKEN_SECRET!, {
+        expiresIn: "2h", // Scade in 2 ore
+    });
+};

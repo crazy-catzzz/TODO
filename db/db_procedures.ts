@@ -57,7 +57,7 @@ export async function validate_user(username : string, password : string) : Prom
     try {
         let match = await auth.compare_hash(password, password_hash)
         if (match) {
-            token = "token molto figo";
+            token = auth.generate_access_token(username);
         }
     } catch(err) {
         console.error(err);

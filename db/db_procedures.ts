@@ -76,3 +76,40 @@ export async function validate_user(username : string, password : string) : Prom
         token: token,
     };
 };
+
+export function edit_username(edits : any) : void {
+    const update_query = `UPDATE users SET username="${edits.username}" WHERE id=${edits.id};`;
+
+    // Eseguo la query di update
+    try {
+        db.run(update_query);
+    } catch(err) {
+        throw err;
+    }
+}
+
+export async function edit_password(edits : any) : Promise<void> {
+    const hash_query = `SELECT password_hash FROM users WHERE id=${edits.id};`;
+
+    // Eseguo la query di update
+    try {
+        const hash : string = ((hash_obj : any = db.query(hash_query).get()) => {
+            return hash_obj.password_hash;
+        })();
+
+        const match = await auth.compare_hash(edits.old_password, hash);
+        if (!match) {
+            let err : any = new Error("Passwords don't match");
+            err.code = "noMatch";
+            throw err;
+        }
+
+        // Creo l'hash della nuova password
+        const pw_hash = await auth.create_hash(edits.password);
+        const update_query = `UPDATE users SET password_hash="${pw_hash}" WHERE id=${edits.id};`;
+
+        db.query(update_query).run();
+    } catch(err) {
+        throw err;
+    }
+}

@@ -41,9 +41,27 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     if (!user) res.sendStatus(404); // 404 Not Found
     else res.status(200).send(user);
 });
-app.patch(user_endpoint, authenticate, (req, res) => {
+app.patch(user_endpoint, authenticate, async (req, res) => {
     const edit_author = procedures.get_user_by_ID(req.body.user.id);
-    console.log(edit_author);
+    const edits = req.body;
+
+    if (edit_author.id != edits.id && edit_author.permission_level < 1) {
+        // L'utente sta provando a modificare un altro utente senza permesso
+        res.sendStatus(403); // 403 Forbidden
+        return;
+    }
+
+    try {
+        if (edits.username) procedures.edit_username(edits);
+        if (edits.password) await procedures.edit_password(edits);
+    } catch(err : any) {
+        if (err.code == "noMatch") {
+            res.status(403).send(err.message);
+            return;
+        }
+        res.sendStatus(500);
+    }
+
     res.sendStatus(200);
 });
 app.delete(user_endpoint, (req, res) => {

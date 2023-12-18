@@ -15,7 +15,7 @@ export function authenticate(req : Request, res : Response, next : any) : void {
     jwt.verify(token, Bun.env.TOKEN_SECRET!, (err : any, user : any) => {
         if (err) {
             console.error(err);
-            res.sendStatus(403); // 403 Forbidden
+            res.status(403).send(err.message || "Forbidden"); // 403 Forbidden
             return;
         }
 

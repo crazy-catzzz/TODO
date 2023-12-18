@@ -40,8 +40,9 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     if (!user) res.sendStatus(404); // 404 Not Found
     else res.status(200).send(user);
 });
-app.put(user_endpoint, authenticate, (req, res) => {
-    console.log(req.body.user);
+app.patch(user_endpoint, authenticate, (req, res) => {
+    const edit_author = procedures.get_user_by_ID(req.body.user.id);
+    console.log(edit_author);
     res.sendStatus(200);
 });
 app.delete(user_endpoint, (req, res) => {

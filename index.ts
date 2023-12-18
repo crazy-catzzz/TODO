@@ -64,8 +64,25 @@ app.patch(user_endpoint, authenticate, async (req, res) => {
 
     res.sendStatus(200);
 });
-app.delete(user_endpoint, (req, res) => {
-    res.sendStatus(501)
+app.delete(`${user_endpoint}/:id`, authenticate, (req, res) => {
+    const author : any = procedures.get_user_by_ID(req.body.user.id);
+
+    const id : number = parseInt(req.params.id.substring(1));
+
+    if (author.id != id && author.permission_level < 1) {
+        // L'utente sta provando ad eliminare un altro utente senza permesso
+        res.sendStatus(403); // 403 Forbidden
+        return;
+    }
+    
+    try {
+        procedures.delete_user(id);
+    } catch(err) {
+        console.error(err);
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200);
 });
 
 // Endpoint /api/v1/login

@@ -113,3 +113,13 @@ export async function edit_password(edits : any) : Promise<void> {
         throw err;
     }
 }
+
+export function delete_user(id : number) {
+    const delete_query = `DELETE FROM users WHERE id=${id};`;
+
+    try {
+        db.query(delete_query).run();
+    } catch(err) {
+        throw err;
+    }
+}

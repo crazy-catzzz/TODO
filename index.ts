@@ -36,6 +36,7 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     const id : number = parseInt(req.params.id.substring(1));
     
     const user = procedures.get_user_by_ID(id);
+    user.lists = procedures.get_user_lists(id);
     
     if (!user) res.sendStatus(404); // 404 Not Found
     else res.status(200).send(user);

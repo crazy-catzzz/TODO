@@ -13,6 +13,7 @@ CREATE TABLE lists (
     list_name text NOT NULL,
     creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    visibility_level integer NOT NULL DEFAULT 1, -- 0: private, 1: public
 
     FOREIGN KEY (owner_id) REFERENCES users(id)
 );
@@ -23,7 +24,6 @@ CREATE TABLE todos (
     completion_status integer NOT NULL DEFAULT 0,
     creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    visibility_level integer NOT NULL DEFAULT 1, -- 0: private, 1: public
     
     PRIMARY KEY (id, list_id),
     FOREIGN KEY (list_id) REFERENCES lists(id)

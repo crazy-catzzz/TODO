@@ -140,6 +140,18 @@ export function get_list_by_ID(id : number) : any {
     try {
         return db.query(select_query).get();
     } catch(err) {
+        console.error(err);
+        throw err;
+    }
+}
+
+export function edit_list(edits : any) : void {
+    const update_query = `UPDATE lists SET visibility_level=${edits.visibility_level}, list_name="${edits.list_name}" WHERE id=${edits.id};`;
+
+    try {
+        db.query(update_query).run();
+    } catch(err) {
+        console.error(err);
         throw err;
     }
 }

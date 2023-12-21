@@ -137,7 +137,30 @@ app.get(`${list_endpoint}/:id`, (req, res) => {
 
     res.status(200).send(list);
 });
-app.patch(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.patch(list_endpoint, authenticate, (req, res) => {
+    const to_edit : any = procedures.get_list_by_ID(req.body.id);
+    const author : any = procedures.get_user_by_ID(req.body.user.id);
+    if (to_edit.owner_id != author.id && author.permission_level < 1) {
+        res.sendStatus(403);
+        return;
+    }
+    if (to_edit == undefined) {
+        res.sendStatus(404);
+        return;
+    }
+
+    try {
+        procedures.edit_list({
+            id: req.body.id,
+            list_name: req.body.list_name === undefined? to_edit.list_name : req.body.list_name,
+            visibility_level: Number.isFinite(req.body.visibility_level)? req.body.visibility_level : to_edit.visibility_level
+        });
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200);
+});
 app.delete(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
 
 // Endpoint /api/v1/todo

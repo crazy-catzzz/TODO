@@ -176,13 +176,25 @@ app.delete(`${list_endpoint}/:id`, authenticate, (req, res) => {
         res.sendStatus(500);
     }
 
-    res.sendStatus(200)
+    res.sendStatus(200);
 });
 
 // Endpoint /api/v1/todo
 const todo_endpoint : string = "/api/v1/todo";
 app.post(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
-app.get(todo_endpoint, (req, res) => res.sendStatus(501));
+app.get(`${todo_endpoint}/:id`, (req, res) => {
+    const id = parseInt(req.params.id);
+
+    let todo;
+
+    try {
+        todo = procedures.get_todo_by_ID(id);
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+    res.status(200).send(todo);
+});
 app.patch(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
 app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
 
@@ -190,4 +202,4 @@ app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
 const port = 8080;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
-})
+});

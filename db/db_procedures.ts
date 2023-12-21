@@ -133,3 +133,13 @@ export function add_list(list_name : number, owner_id : number) : void {
         throw err;
     }
 }
+
+export function get_list_by_ID(id : number) : any {
+    const select_query = `SELECT * FROM lists WHERE id=${id};`;
+
+    try {
+        return db.query(select_query).get();
+    } catch(err) {
+        throw err;
+    }
+}

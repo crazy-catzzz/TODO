@@ -32,8 +32,7 @@ app.post(user_endpoint, (req, res) => {
 });
 app.get(`${user_endpoint}/:id`, (req, res) => {
     // Prendo l'ID dai parametri e lo converto a integer
-    // Prendendo l'ID dai parametri, avrò un ID scritto come ":id", lasciandolo così non posso utilizzare la funzione parseInt()
-    const id : number = parseInt(req.params.id.substring(1));
+    const id : number = parseInt(req.params.id);
     
     const user = procedures.get_user_by_ID(id);
     user.lists = procedures.get_user_lists(id);
@@ -131,7 +130,13 @@ app.post(list_endpoint, authenticate, (req, res) => {
 
     res.sendStatus(200);
 });
-app.get(list_endpoint, (req, res) => res.sendStatus(501));
+app.get(`${list_endpoint}/:id`, (req, res) => {
+    const id : number = parseInt(req.params.id);
+
+    const list = procedures.get_list_by_ID(id);
+
+    res.status(200).send(list);
+});
 app.patch(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
 app.delete(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
 

@@ -155,3 +155,14 @@ export function edit_list(edits : any) : void {
         throw err;
     }
 }
+
+export function delete_list(id : number) : void {
+    const delete_query = `DELETE FROM lists WHERE id=${id}`;
+
+    try {
+        db.query(delete_query).run();
+    } catch(err) {
+        console.error(err);
+        throw err;
+    }
+}

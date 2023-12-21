@@ -66,7 +66,7 @@ app.patch(user_endpoint, authenticate, async (req, res) => {
 app.delete(`${user_endpoint}/:id`, authenticate, (req, res) => {
     const author : any = procedures.get_user_by_ID(req.body.user.id);
 
-    const id : number = parseInt(req.params.id.substring(1));
+    const id : number = parseInt(req.params.id);
 
     if (author.id != id && author.permission_level < 1) {
         // L'utente sta provando ad eliminare un altro utente senza permesso
@@ -161,7 +161,23 @@ app.patch(list_endpoint, authenticate, (req, res) => {
 
     res.sendStatus(200);
 });
-app.delete(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.delete(`${list_endpoint}/:id`, authenticate, (req, res) => {
+    const author = procedures.get_user_by_ID(req.body.user.id);
+    const to_delete = procedures.get_list_by_ID(parseInt(req.params.id));
+
+    if (to_delete.owner_id != author.id && author.permission_level < 1) {
+        res.sendStatus(403);
+        return;
+    }
+
+    try {
+        procedures.delete_list(to_delete.id);
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200)
+});
 
 // Endpoint /api/v1/todo
 const todo_endpoint : string = "/api/v1/todo";

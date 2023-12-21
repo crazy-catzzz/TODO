@@ -134,6 +134,7 @@ app.get(`${list_endpoint}/:id`, (req, res) => {
     const id : number = parseInt(req.params.id);
 
     const list = procedures.get_list_by_ID(id);
+    list.todos = procedures.get_list_todos(id);
 
     res.status(200).send(list);
 });

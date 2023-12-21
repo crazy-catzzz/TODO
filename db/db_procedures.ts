@@ -177,3 +177,14 @@ export function get_todo_by_ID(id : number) : any {
         throw err;
     }
 }
+
+export function get_list_todos(list_id : number) : any {
+    const query = `SELECT * FROM todos WHERE list_id=${list_id};`;
+
+    try {
+        return db.query(query).all();
+    } catch(err) {
+        console.error(err);
+        throw err;
+    }
+}

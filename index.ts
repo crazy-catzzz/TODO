@@ -112,6 +112,35 @@ app.post(login_endpoint, (req, res) => {
         }
     });
 });
+app.get(login_endpoint, (req, res) => res.sendStatus(501));
+app.patch(login_endpoint, (req, res) => res.sendStatus(501));
+app.delete(login_endpoint, (req, res) => res.sendStatus(501));
+
+// Endpoint /api/v1/list
+const list_endpoint : string = "/api/v1/list";
+app.post(list_endpoint, authenticate, (req, res) => {
+    const list_name = req.body.name;
+
+    const author_id= req.body.user.id;
+
+    try {
+        procedures.add_list(list_name, author_id);
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200);
+});
+app.get(list_endpoint, (req, res) => res.sendStatus(501));
+app.patch(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.delete(list_endpoint, authenticate, (req, res) => res.sendStatus(501));
+
+// Endpoint /api/v1/todo
+const todo_endpoint : string = "/api/v1/todo";
+app.post(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.get(todo_endpoint, (req, res) => res.sendStatus(501));
+app.patch(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
 
 // Listen on port
 const port = 8080;

@@ -123,3 +123,13 @@ export function delete_user(id : number) {
         throw err;
     }
 }
+
+export function add_list(list_name : number, owner_id : number) : void {
+    const add_query = `INSERT INTO lists (owner_id, list_name) VALUES (${owner_id}, "${list_name}");`;
+
+    try {
+        db.query(add_query).run();
+    } catch(err) {
+        throw err;
+    }
+}

@@ -18,13 +18,12 @@ CREATE TABLE lists (
     FOREIGN KEY (owner_id) REFERENCES users(id)
 );
 CREATE TABLE todos (
-    id integer,
+    id integer PRIMARY KEY AUTOINCREMENT,
     list_id integer,
     todo_name text NOT NULL,
     completion_status integer NOT NULL DEFAULT 0,
     creation_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     
-    PRIMARY KEY (id, list_id),
     FOREIGN KEY (list_id) REFERENCES lists(id)
 );

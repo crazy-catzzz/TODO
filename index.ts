@@ -182,7 +182,35 @@ app.delete(`${list_endpoint}/:id`, authenticate, (req, res) => {
 
 // Endpoint /api/v1/todo
 const todo_endpoint : string = "/api/v1/todo";
-app.post(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.post(todo_endpoint, authenticate, (req, res) => {
+    const id : number = req.body.id;
+    const name : string = req.body.name;
+    const author : any = procedures.get_user_by_ID(req.body.user.id);
+
+    if (!id || !name) {
+        res.sendStatus(400);
+        return;
+    }
+
+    const list = procedures.get_list_by_ID(id);
+
+    if (!list) {
+        res.sendStatus(404);
+        return;
+    }
+    if (list.owner_id != author.id && author.permission_level < 1) {
+        res.sendStatus(403);
+        return;
+    }
+
+    try {
+        procedures.add_todo(id, name);
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200);
+});
 app.get(`${todo_endpoint}/:id`, (req, res) => {
     const id = parseInt(req.params.id);
 

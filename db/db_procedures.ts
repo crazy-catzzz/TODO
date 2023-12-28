@@ -188,3 +188,14 @@ export function get_list_todos(list_id : number) : any {
         throw err;
     }
 }
+
+export function add_todo(id : number, name : string) : void {
+    const query = `INSERT INTO todos (list_id, todo_name) VALUES (${id}, "${name}");`;
+
+    try {
+        db.query(query).run();
+    } catch(err) {
+        console.error(err);
+        throw err;
+    }
+}

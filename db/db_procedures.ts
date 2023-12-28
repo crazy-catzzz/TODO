@@ -168,7 +168,7 @@ export function delete_list(id : number) : void {
 }
 
 export function get_todo_by_ID(id : number) : any {
-    const query = `SELECT todos.*, lists.owner_id, lists.visibility_level FROM todos INNER JOIN lists WHERE todos.list_id=lists.id AND todos.id=${id};`;
+    const query = `SELECT todos.*, lists.owner_id, lists.visibility_level FROM todos INNER JOIN lists ON todos.list_id=lists.id WHERE todos.list_id=lists.id AND todos.id=${id};`;
 
     try {
         return db.query(query).get();

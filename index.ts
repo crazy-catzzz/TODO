@@ -111,9 +111,9 @@ app.post(login_endpoint, (req, res) => {
         }
     });
 });
-app.get(login_endpoint, (req, res) => res.sendStatus(501));
-app.patch(login_endpoint, (req, res) => res.sendStatus(501));
-app.delete(login_endpoint, (req, res) => res.sendStatus(501));
+app.get(login_endpoint, (req, res) => res.sendStatus(405));
+app.patch(login_endpoint, (req, res) => res.sendStatus(405));
+app.delete(login_endpoint, (req, res) => res.sendStatus(405));
 
 // Endpoint /api/v1/list
 const list_endpoint : string = "/api/v1/list";
@@ -224,8 +224,8 @@ app.get(`${todo_endpoint}/:id`, (req, res) => {
 
     res.status(200).send(todo);
 });
-app.patch(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
-app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(501));
+app.patch(todo_endpoint, authenticate, (req, res) => res.sendStatus(405));
+app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(405));
 
 // Listen on port
 const port = 8080;

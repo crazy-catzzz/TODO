@@ -249,7 +249,27 @@ app.patch(todo_endpoint, authenticate, (req, res) => {
 
     res.sendStatus(200);
 });
-app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(405));
+app.delete(`${todo_endpoint}/:id`, authenticate, (req, res) => {
+    const author : any = procedures.get_user_by_ID(req.body.user.id);
+    const to_delete : any = procedures.get_todo_by_ID(parseInt(req.params.id));
+
+    if (to_delete.owner_id != author.id && author.permission_level < 1) {
+        res.sendStatus(403);
+        return;
+    }
+    if (to_delete == undefined) {
+        res.sendStatus(404);
+        return;
+    }
+
+    try {
+        procedures.delete_todo(to_delete.id);
+    } catch {
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200);
+});
 
 // Listen on port
 const port = 8080;

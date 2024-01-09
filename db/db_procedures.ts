@@ -210,3 +210,14 @@ export function edit_todo(todo : any) : void {
         throw err;
     }
 }
+
+export function delete_todo(id : number) {
+    const query : string = `DELETE FROM todos WHERE id=${id};`;
+
+    try {
+        db.query(query).run();
+    } catch(err) {
+        console.error(err);
+        throw err;
+    }
+}

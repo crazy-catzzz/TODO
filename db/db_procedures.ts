@@ -199,3 +199,14 @@ export function add_todo(id : number, name : string) : void {
         throw err;
     }
 }
+
+export function edit_todo(todo : any) : void {
+    const query : string = `UPDATE todos SET todo_name="${todo.todo_name}", completion_status=${todo.completion_status};`;
+
+    try {
+        db.query(query).run();
+    } catch(err) {
+        console.error(err);
+        throw err;
+    }
+}

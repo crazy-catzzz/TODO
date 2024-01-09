@@ -224,7 +224,31 @@ app.get(`${todo_endpoint}/:id`, (req, res) => {
 
     res.status(200).send(todo);
 });
-app.patch(todo_endpoint, authenticate, (req, res) => res.sendStatus(405));
+app.patch(todo_endpoint, authenticate, (req, res) => {
+    const author : any = procedures.get_user_by_ID(req.body.user.id);
+    const to_edit : any = procedures.get_todo_by_ID(req.body.id);
+
+    if (to_edit.owner_id != author.id && author.permission_level < 1) {
+        res.sendStatus(403);
+        return;
+    }
+    if (to_edit == undefined) {
+        res.sendStatus(404);
+        return;
+    }
+
+    try {
+        procedures.edit_todo({
+            id: req.body.id,
+            todo_name: req.body.todo_name === undefined? to_edit.todo_name : req.body.todo_name,
+            completion_status: Number.isFinite(req.body.completion_status)? req.body.completion_status : to_edit.completion_status
+        });
+    } catch(err) {
+        res.sendStatus(500);
+    }
+
+    res.sendStatus(200);
+});
 app.delete(todo_endpoint, authenticate, (req, res) => res.sendStatus(405));
 
 // Listen on port

@@ -1,5 +1,8 @@
 import { Database } from "bun:sqlite";
 import * as auth from "../auth/auth_helpers.ts";
+import { User } from "../dto/user.ts";
+import { List } from "../dto/list.ts";
+import { Todo } from "../dto/todo.ts";
 
 // Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le stored procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
 
@@ -27,20 +30,20 @@ export async function add_user(username : string, password : string) : Promise<n
 
 // Utilizzando any come tipo vado direttamente contro il motivo dell'esistenza di TypeScript, tuttavia non effettuo troppe operazioni con questo oggetto anonimo
 // Forse andrò a creare dei DTO per salvaguardare la type safety
-export function get_user_by_ID(id : number) : any {
-    const users_query : string = `SELECT id, username, permission_level FROM users WHERE id=${id};`;
+export function get_user_by_ID(id : number) : User {
+    const users_query : string = `SELECT id, username, permission_level, creation_date FROM users WHERE id=${id};`;
 
     // Eseguo la query
-    const user : any = db.query(users_query).get();
+    const user : User = db.query(users_query).get() as User;
 
     return user;
 };
 
-export function get_user_lists(id : number) : any {
+export function get_user_lists(id : number) : List[] {
     const lists_query : string = `SELECT id, list_name FROM lists WHERE owner_id=${id};`;
 
     // Eseguo la query
-    const lists : any = db.query(lists_query).all();
+    const lists : List[] = db.query(lists_query).all() as List[];
 
     return lists;
 }
@@ -139,11 +142,11 @@ export function add_list(list_name : number, owner_id : number) : void {
     }
 }
 
-export function get_list_by_ID(id : number) : any {
+export function get_list_by_ID(id : number) : List {
     const select_query = `SELECT * FROM lists WHERE id=${id};`;
 
     try {
-        return db.query(select_query).get();
+        return db.query(select_query).get() as List;
     } catch(err) {
         console.error(err);
         throw err;
@@ -174,22 +177,22 @@ export function delete_list(id : number) : void {
     }
 }
 
-export function get_todo_by_ID(id : number) : any {
+export function get_todo_by_ID(id : number) : Todo {
     const query = `SELECT todos.*, lists.owner_id, lists.visibility_level FROM todos INNER JOIN lists ON todos.list_id=lists.id WHERE todos.list_id=lists.id AND todos.id=${id};`;
 
     try {
-        return db.query(query).get();
+        return db.query(query).get() as Todo;
     } catch(err) {
         console.error(err);
         throw err;
     }
 }
 
-export function get_list_todos(list_id : number) : any {
+export function get_list_todos(list_id : number) : Todo[] {
     const query = `SELECT * FROM todos WHERE list_id=${list_id};`;
 
     try {
-        return db.query(query).all();
+        return db.query(query).all() as Todo[];
     } catch(err) {
         console.error(err);
         throw err;

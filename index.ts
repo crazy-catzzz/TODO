@@ -35,10 +35,10 @@ app.get(`${user_endpoint}/:id`, (req, res) => {
     const id : number = parseInt(req.params.id);
     
     const user = procedures.get_user_by_ID(id);
-    user.lists = procedures.get_user_lists(id);
+    const lists = procedures.get_user_lists(id);
     
     if (!user) res.sendStatus(404); // 404 Not Found
-    else res.status(200).send(user);
+    else res.status(200).send({user, lists});
 });
 app.patch(user_endpoint, authenticate, async (req, res) => {
     const edit_author = procedures.get_user_by_ID(req.body.user.id);
@@ -134,9 +134,9 @@ app.get(`${list_endpoint}/:id`, (req, res) => {
     const id : number = parseInt(req.params.id);
 
     const list = procedures.get_list_by_ID(id);
-    list.todos = procedures.get_list_todos(id);
+    const todos = procedures.get_list_todos(id);
 
-    res.status(200).send(list);
+    res.status(200).send({list, todos});
 });
 app.patch(list_endpoint, authenticate, (req, res) => {
     const to_edit : any = procedures.get_list_by_ID(req.body.id);
@@ -183,7 +183,7 @@ app.delete(`${list_endpoint}/:id`, authenticate, (req, res) => {
 // Endpoint /api/v1/todo
 const todo_endpoint : string = "/api/v1/todo";
 app.post(todo_endpoint, authenticate, (req, res) => {
-    const id : number = req.body.id;
+    const id : number = req.body.list_id;
     const name : string = req.body.name;
     const author : any = procedures.get_user_by_ID(req.body.user.id);
 

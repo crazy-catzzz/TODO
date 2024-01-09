@@ -1,8 +1,8 @@
 import { Database } from "bun:sqlite";
-import * as auth from "../auth/auth_helpers.ts";
-import { User } from "../dto/user.ts";
-import { List } from "../dto/list.ts";
-import { Todo } from "../dto/todo.ts";
+import * as auth from "@auth/auth_helpers.ts";
+import { User } from "@dto/user.ts";
+import { List } from "@dto/list.ts";
+import { Todo } from "@dto/todo.ts";
 
 // Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le stored procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
 

@@ -119,6 +119,11 @@ export function delete_user(id : number) {
 
     try {
         db.query(delete_query).run();
+
+        const lists = get_user_lists(id);
+        for (const list of lists) {
+            delete_list(list.id);
+        }
     } catch(err) {
         throw err;
     }
@@ -157,10 +162,12 @@ export function edit_list(edits : any) : void {
 }
 
 export function delete_list(id : number) : void {
-    const delete_query = `DELETE FROM lists WHERE id=${id}`;
+    const delete_query = `DELETE FROM lists WHERE id=${id};`;
+    const delete_query_todos = `DELETE FROM todos WHERE list_id=${id};`;
 
     try {
         db.query(delete_query).run();
+        db.query(delete_query_todos).run();
     } catch(err) {
         console.error(err);
         throw err;

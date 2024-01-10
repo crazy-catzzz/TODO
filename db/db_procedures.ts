@@ -10,10 +10,7 @@ import { Todo } from "@dto/todo.ts";
 
 const db = new Database(Bun.env.DB_PATH!);
 
-export async function add_user(username : string, password : string) : Promise<number> {
-    let status : number = 0; // STATUS SUCCESS
-    const cost_factor : number = 10;
-    
+export async function add_user(username : string, password : string) : Promise<void> {
     // Hash password con sale randomizzato
     try {
         const hash = await auth.create_hash(password);
@@ -21,11 +18,9 @@ export async function add_user(username : string, password : string) : Promise<n
         db.query(`INSERT INTO users (username, password_hash) VALUES ("${username}", "${hash}");`)
         .run();
     } catch(err) {
-        status = 1; // STATUS FAILURE
         console.error(err);
+        throw err;
     }
-
-    return status;
 };
 
 // Utilizzando any come tipo vado direttamente contro il motivo dell'esistenza di TypeScript, tuttavia non effettuo troppe operazioni con questo oggetto anonimo

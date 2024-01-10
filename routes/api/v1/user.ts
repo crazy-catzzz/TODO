@@ -19,12 +19,11 @@ user_router.post(user_endpoint, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     
-    procedures.add_user(username, password).then(exit => {
-        if(exit == 0) {
-            res.sendStatus(200); // 200 OK
-        } else {
-            res.sendStatus(500); // 500 Internal Server Error
-        }
+    procedures.add_user(username, password).then(() => {
+        res.sendStatus(200); // 200 OK
+    })
+    .catch(err => {
+        res.status(500).send(err.message); // 500 Internal server error
     })
 });
 user_router.get(`${user_endpoint}/:id`, (req, res) => {

@@ -48,37 +48,29 @@ export function get_user_lists(id : number) : List[] {
 }
 
 // Asincrona perché devo ritornare un valore per cui aspetto
-export async function validate_user(username : string, password : string) : Promise<any> {
+export async function validate_user(username : string, password : string) : Promise<void> {
     const user_query = `SELECT password_hash, id FROM users WHERE username="${username}"`;
 
     // Ottengo la password hashata dal DB
     const user_obj : any = db.query(user_query).get();
-    if (!user_obj) return undefined;
+    if (!user_obj) throw new Error("Not found");
     
     const password_hash = user_obj.password_hash;
 
     // Confronto la password con l'hash e ritorno un token di accesso se combaciano
-    let token : string = "";
-    let status : number = 0; // STATUS SUCCESS
-    
     try {
         let match = await auth.compare_hash(password, password_hash)
         if (match) {
             // Genera token di accesso
-            token = auth.generate_access_token(user_obj.id);
-        }
+            return auth.generate_access_token(user_obj.id);
+        } else throw new Error("Unauthorized");
     } catch(err) {
         console.error(err);
-        status = 1; // STATUS FAILURE
+        throw err;
     }
-
-    // procedure_obj (procedure_return)
-    return {
-        status: status,
-        token: token,
-    };
 };
 
+// Modifico nome utente
 export function edit_username(edits : any) : void {
     const update_query = `UPDATE users SET username="${edits.username}" WHERE id=${edits.id};`;
 
@@ -90,6 +82,7 @@ export function edit_username(edits : any) : void {
     }
 }
 
+// Modifico password utente
 export async function edit_password(edits : any) : Promise<void> {
     const hash_query = `SELECT password_hash FROM users WHERE id=${edits.id};`;
 
@@ -116,6 +109,7 @@ export async function edit_password(edits : any) : Promise<void> {
     }
 }
 
+// Elimina utente e tutte le sue liste
 export function delete_user(id : number) {
     const delete_query = `DELETE FROM users WHERE id=${id};`;
 
@@ -131,6 +125,7 @@ export function delete_user(id : number) {
     }
 }
 
+// Inserisci lista
 export function add_list(list_name : number, owner_id : number) : void {
     const add_query = `INSERT INTO lists (owner_id, list_name) VALUES (${owner_id}, "${list_name}");`;
 
@@ -141,6 +136,7 @@ export function add_list(list_name : number, owner_id : number) : void {
     }
 }
 
+// Ottieni lista da DB
 export function get_list_by_ID(id : number) : List {
     const select_query = `SELECT * FROM lists WHERE id=${id};`;
 
@@ -152,6 +148,7 @@ export function get_list_by_ID(id : number) : List {
     }
 }
 
+// Modifica lista
 export function edit_list(edits : any) : void {
     const update_query = `UPDATE lists SET visibility_level=${edits.visibility_level}, list_name="${edits.list_name}" WHERE id=${edits.id};`;
 
@@ -163,6 +160,7 @@ export function edit_list(edits : any) : void {
     }
 }
 
+// Elimina lista e tutti i TODO inseriti
 export function delete_list(id : number) : void {
     const delete_query = `DELETE FROM lists WHERE id=${id};`;
     const delete_query_todos = `DELETE FROM todos WHERE list_id=${id};`;

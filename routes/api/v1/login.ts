@@ -18,18 +18,14 @@ login_router.post(login_endpoint, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    procedures.validate_user(username, password).then(token_obj => {
-        
-        if (!token_obj) {
-            res.sendStatus(404); // 404 Not Found
-        } else if (token_obj.status != 0) {
-            res.sendStatus(500); // 500 Internal Server Error
-        } else if (token_obj.token == "") {
-            res.sendStatus(401); // 401 Unauthorized
-        } else {
-            res.status(200).send({token: token_obj.token}); // 200 OK
-        }
-    });
+    procedures.validate_user(username, password).then(token => {
+        res.send({token: token});
+    })
+    .catch(err => {
+        if (err.message === "Not found") res.sendStatus(404);
+        else if (err.message === "Unauthorized") res.sendStatus(401);
+        else res.sendStatus(500);
+    })
 });
 login_router.get(login_endpoint, (req, res) => res.sendStatus(405));
 login_router.patch(login_endpoint, (req, res) => res.sendStatus(405));

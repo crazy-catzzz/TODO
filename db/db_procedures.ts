@@ -39,9 +39,12 @@ export function get_user_lists(id : number) : List[] {
     const lists_query : string = `SELECT id, list_name FROM lists WHERE owner_id=${id};`;
 
     // Eseguo la query
-    const lists : List[] = db.query(lists_query).all() as List[];
-
-    return lists;
+    try {
+        return db.query(lists_query).all() as List[];
+    } catch(err) {
+        console.error(err);
+        throw err;
+    }
 }
 
 // Asincrona perché devo ritornare un valore per cui aspetto

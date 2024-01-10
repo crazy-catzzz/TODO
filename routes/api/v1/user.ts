@@ -30,11 +30,15 @@ user_router.get(`${user_endpoint}/:id`, (req, res) => {
     // Prendo l'ID dai parametri e lo converto a integer
     const id : number = parseInt(req.params.id);
     
-    const user = procedures.get_user_by_ID(id);
-    const lists = procedures.get_user_lists(id);
-    
-    if (!user) res.sendStatus(404); // 404 Not Found
-    else res.status(200).send({user, lists});
+    try {
+        const user = procedures.get_user_by_ID(id);
+        const lists = procedures.get_user_lists(id);
+        
+        if (!user) res.sendStatus(404); // 404 Not Found
+        else res.status(200).send({user, lists});
+    } catch(err) {
+        res.sendStatus(500);
+    }
 });
 user_router.patch(user_endpoint, authenticate, async (req, res) => {
     const edit_author = procedures.get_user_by_ID(req.body.user.id);

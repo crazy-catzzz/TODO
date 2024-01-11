@@ -226,6 +226,7 @@ export function edit_todo({id, todo_name, completion_status} : Todo) : void {
     }
 }
 
+// Elimina TODO
 export function delete_todo(id : number) {
     const query : string = `DELETE FROM todos WHERE id=${id};`;
 

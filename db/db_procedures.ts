@@ -10,6 +10,7 @@ import { Todo } from "@dto/todo.ts";
 
 const db = new Database(Bun.env.DB_PATH!);
 
+// Inserisco utente
 export async function add_user(username : string, password : string) : Promise<void> {
     // Hash password con sale randomizzato
     try {
@@ -23,6 +24,7 @@ export async function add_user(username : string, password : string) : Promise<v
     }
 };
 
+// Ottengo utente dal DB
 export function get_user_by_ID(id : number) : User {
     const users_query : string = `SELECT id, username, permission_level, creation_date FROM users WHERE id=${id};`;
 
@@ -35,6 +37,7 @@ export function get_user_by_ID(id : number) : User {
     }
 };
 
+// Ottengo liste dell'utente
 export function get_user_lists(id : number) : List[] {
     const lists_query : string = `SELECT id, list_name FROM lists WHERE owner_id=${id};`;
 
@@ -47,6 +50,7 @@ export function get_user_lists(id : number) : List[] {
     }
 }
 
+// Controllo password
 // Asincrona perché devo ritornare un valore per cui aspetto
 export async function validate_user(username : string, password : string) : Promise<void> {
     const user_query = `SELECT password_hash, id FROM users WHERE username="${username}"`;
@@ -174,6 +178,7 @@ export function delete_list(id : number) : void {
     }
 }
 
+// Ottieni TODO da DB
 export function get_todo_by_ID(id : number) : Todo {
     const query = `SELECT todos.*, lists.owner_id, lists.visibility_level FROM todos INNER JOIN lists ON todos.list_id=lists.id WHERE todos.list_id=lists.id AND todos.id=${id};`;
 
@@ -185,6 +190,7 @@ export function get_todo_by_ID(id : number) : Todo {
     }
 }
 
+// Ottieni TODO di una lista
 export function get_list_todos(list_id : number) : Todo[] {
     const query = `SELECT * FROM todos WHERE list_id=${list_id};`;
 
@@ -196,6 +202,7 @@ export function get_list_todos(list_id : number) : Todo[] {
     }
 }
 
+// Inserisci TODO
 export function add_todo(id : number, name : string) : void {
     const query = `INSERT INTO todos (list_id, todo_name) VALUES (${id}, "${name}");`;
 
@@ -207,8 +214,9 @@ export function add_todo(id : number, name : string) : void {
     }
 }
 
-export function edit_todo(todo : any) : void {
-    const query : string = `UPDATE todos SET todo_name="${todo.todo_name}", completion_status=${todo.completion_status};`;
+// Modifica TODO
+export function edit_todo({id, todo_name, completion_status} : Todo) : void {
+    const query : string = `UPDATE todos SET todo_name="${todo_name}", completion_status=${completion_status} WHERE id=${id};`;
 
     try {
         db.query(query).run();

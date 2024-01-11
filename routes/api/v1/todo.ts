@@ -1,6 +1,7 @@
 import express from "express";
 import * as procedures from "@db/db_procedures.ts";
 import { authenticate } from "@middleware/auth.ts";
+import { Todo } from "@dto/todo";
 
 export const todo_router = express.Router();
 
@@ -66,7 +67,7 @@ todo_router.patch(todo_endpoint, authenticate, (req, res) => {
             id: req.body.id,
             todo_name: req.body.todo_name === undefined? to_edit.todo_name : req.body.todo_name,
             completion_status: Number.isFinite(req.body.completion_status)? req.body.completion_status : to_edit.completion_status
-        });
+        } as Todo);
     } catch(err) {
         res.sendStatus(500);
     }

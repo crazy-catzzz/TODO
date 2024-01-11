@@ -7,12 +7,12 @@ export class Todo {
     last_modified : string;
 
     constructor(
-        id : number,
-        list_id : number,
-        todo_name : string,
-        completion_status : number,
-        creation_date : string,
-        last_modified : string
+        id : number = 0,
+        list_id : number = 0,
+        todo_name : string = "",
+        completion_status : number = 0,
+        creation_date : string = "",
+        last_modified : string = ""
     ) {
         this.id = id;
         this.list_id = list_id;

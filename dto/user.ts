@@ -5,10 +5,10 @@ export class User {
     permission_level : number;
 
     constructor(
-        id : number,
-        username : string,
-        creation_date : string,
-        permission_level : number
+        id : number = 0,
+        username : string = "",
+        creation_date : string = "",
+        permission_level : number = 0
     ) {
         this.id = id;
         this.username = username;

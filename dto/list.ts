@@ -7,12 +7,12 @@ export class List {
     visibility_level : number;
 
     constructor(
-        id : number,
-        owner_id : number,
-        list_name : string,
-        creation_date : string,
-        last_modified : string,
-        visibility_level : number
+        id : number = 0,
+        owner_id : number = 0,
+        list_name : string = "",
+        creation_date : string = "",
+        last_modified : string = "",
+        visibility_level : number = 0
     ) {
         this.id = id;
         this.owner_id = owner_id;

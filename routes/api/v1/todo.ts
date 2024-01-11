@@ -8,16 +8,16 @@ export const todo_router = express.Router();
 // Endpoint /todo
 const todo_endpoint : string = "/todo";
 todo_router.post(todo_endpoint, authenticate, (req, res) => {
-    const id : number = req.body.list_id;
+    const list_id : number = req.body.list_id;
     const name : string = req.body.name;
     const author : any = procedures.get_user_by_ID(req.body.user.id);
 
-    if (!id || !name) {
+    if (!list_id || !name) {
         res.sendStatus(400);
         return;
     }
 
-    const list = procedures.get_list_by_ID(id);
+    const list = procedures.get_list_by_ID(list_id);
 
     if (!list) {
         res.sendStatus(404);
@@ -29,7 +29,10 @@ todo_router.post(todo_endpoint, authenticate, (req, res) => {
     }
 
     try {
-        procedures.add_todo(id, name);
+        procedures.add_todo({
+            list_id: list_id,
+            todo_name: name
+        } as Todo);
     } catch(err) {
         res.sendStatus(500);
     }
@@ -39,15 +42,13 @@ todo_router.post(todo_endpoint, authenticate, (req, res) => {
 todo_router.get(`${todo_endpoint}/:id`, (req, res) => {
     const id = parseInt(req.params.id);
 
-    let todo;
-
     try {
-        todo = procedures.get_todo_by_ID(id);
+        const todo = procedures.get_todo_by_ID(id);
+        if (!todo) res.sendStatus(404);
+        res.status(200).send(todo);
     } catch(err) {
         res.sendStatus(500);
     }
-
-    res.status(200).send(todo);
 });
 todo_router.patch(todo_endpoint, authenticate, (req, res) => {
     const author : any = procedures.get_user_by_ID(req.body.user.id);

@@ -203,8 +203,8 @@ export function get_list_todos(list_id : number) : Todo[] {
 }
 
 // Inserisci TODO
-export function add_todo(id : number, name : string) : void {
-    const query = `INSERT INTO todos (list_id, todo_name) VALUES (${id}, "${name}");`;
+export function add_todo({list_id, todo_name} : Todo) : void {
+    const query = `INSERT INTO todos (list_id, todo_name) VALUES (${list_id}, "${todo_name}");`;
 
     try {
         db.query(query).run();

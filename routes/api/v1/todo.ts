@@ -2,6 +2,7 @@ import express from "express";
 import * as procedures from "@db/db_procedures.ts";
 import { authenticate } from "@middleware/auth.ts";
 import { Todo } from "@dto/todo";
+import { User } from "@dto/user";
 
 export const todo_router = express.Router();
 
@@ -10,7 +11,7 @@ const todo_endpoint : string = "/todo";
 todo_router.post(todo_endpoint, authenticate, (req, res) => {
     const list_id : number = req.body.list_id;
     const name : string = req.body.name;
-    const author : any = procedures.get_user_by_ID(req.body.user.id);
+    const author : User = procedures.get_user_by_ID(req.body.user.id);
 
     if (!list_id || !name) {
         res.sendStatus(400);
@@ -51,8 +52,8 @@ todo_router.get(`${todo_endpoint}/:id`, (req, res) => {
     }
 });
 todo_router.patch(todo_endpoint, authenticate, (req, res) => {
-    const author : any = procedures.get_user_by_ID(req.body.user.id);
-    const to_edit : any = procedures.get_todo_by_ID(req.body.id);
+    const author : User = procedures.get_user_by_ID(req.body.user.id);
+    const to_edit : Todo = procedures.get_todo_by_ID(req.body.id);
 
     if (to_edit.owner_id != author.id && author.permission_level < 1) {
         res.sendStatus(403);
@@ -76,8 +77,8 @@ todo_router.patch(todo_endpoint, authenticate, (req, res) => {
     res.sendStatus(200);
 });
 todo_router.delete(`${todo_endpoint}/:id`, authenticate, (req, res) => {
-    const author : any = procedures.get_user_by_ID(req.body.user.id);
-    const to_delete : any = procedures.get_todo_by_ID(parseInt(req.params.id));
+    const author : User = procedures.get_user_by_ID(req.body.user.id);
+    const to_delete : Todo = procedures.get_todo_by_ID(parseInt(req.params.id));
 
     if (to_delete.owner_id != author.id && author.permission_level < 1) {
         res.sendStatus(403);

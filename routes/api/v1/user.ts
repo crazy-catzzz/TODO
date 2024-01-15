@@ -54,7 +54,7 @@ user_router.patch(user_endpoint, authenticate, async (req, res) => {
         if (edits.username) procedures.edit_username(edits);
         if (edits.password) await procedures.edit_password(edits);
     } catch(err : any) {
-        if (err.code == "noMatch") {
+        if (err.message == "noMatch") {
             res.status(403).send(err.message);
             return;
         }

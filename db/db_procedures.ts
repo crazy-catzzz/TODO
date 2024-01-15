@@ -56,7 +56,7 @@ export async function validate_user(username : string, password : string) : Prom
     const user_query = `SELECT password_hash, id FROM users WHERE username="${username}"`;
 
     // Ottengo la password hashata dal DB
-    const user_obj : any = db.query(user_query).get();
+    const user_obj : User = db.query(user_query).get() as User;
     if (!user_obj) throw new Error("Not found");
     
     const password_hash = user_obj.password_hash;
@@ -92,14 +92,14 @@ export async function edit_password(edits : any) : Promise<void> {
 
     // Eseguo la query di update
     try {
-        const hash : string = ((hash_obj : any = db.query(hash_query).get()) => {
+        const hash : string = ((hash_obj : { password_hash : string } = db.query(hash_query).get() as any) => {
             return hash_obj.password_hash;
         })();
 
         const match = await auth.compare_hash(edits.old_password, hash);
         if (!match) {
             const err : any = new Error("Passwords don't match");
-            err.code = "noMatch";
+            err.message = "noMatch";
             throw err;
         }
 

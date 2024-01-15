@@ -3,6 +3,7 @@ import * as auth from "@auth/auth_helpers.ts";
 import { User } from "@dto/user.ts";
 import { List } from "@dto/list.ts";
 import { Todo } from "@dto/todo.ts";
+import { list_edits, user_edits } from "../types/db_types";
 
 // Questo è un set di procedure scritte in TypeScript dopo che ho scoperto che SQLite non supporta le stored procedures (ho sprecato due ore della mia vita a scrivere tali stored procedures)
 
@@ -75,7 +76,7 @@ export async function validate_user(username : string, password : string) : Prom
 }
 
 // Modifico nome utente
-export function edit_username(edits : any) : void {
+export function edit_username(edits : user_edits) : void {
     const update_query = `UPDATE users SET username="${edits.username}" WHERE id=${edits.id};`;
 
     // Eseguo la query di update
@@ -87,18 +88,18 @@ export function edit_username(edits : any) : void {
 }
 
 // Modifico password utente
-export async function edit_password(edits : any) : Promise<void> {
+export async function edit_password(edits : user_edits) : Promise<void> {
     const hash_query = `SELECT password_hash FROM users WHERE id=${edits.id};`;
 
     // Eseguo la query di update
     try {
-        const hash : string = ((hash_obj : { password_hash : string } = db.query(hash_query).get() as any) => {
+        const hash : string = ((hash_obj : { password_hash : string } = db.query(hash_query).get() as { password_hash : string }) => {
             return hash_obj.password_hash;
         })();
 
         const match = await auth.compare_hash(edits.old_password, hash);
         if (!match) {
-            const err : any = new Error("Passwords don't match");
+            const err : Error = new Error("Passwords don't match");
             err.message = "noMatch";
             throw err;
         }
@@ -153,7 +154,7 @@ export function get_list_by_ID(id : number) : List {
 }
 
 // Modifica lista
-export function edit_list(edits : any) : void {
+export function edit_list(edits : list_edits) : void {
     const update_query = `UPDATE lists SET visibility_level=${edits.visibility_level}, list_name="${edits.list_name}" WHERE id=${edits.id};`;
 
     try {

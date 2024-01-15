@@ -22,7 +22,7 @@ export async function add_user(username : string, password : string) : Promise<v
         console.error(err);
         throw err;
     }
-};
+}
 
 // Ottengo utente dal DB
 export function get_user_by_ID(id : number) : User {
@@ -35,7 +35,7 @@ export function get_user_by_ID(id : number) : User {
         console.error(err);
         throw err;
     }
-};
+}
 
 // Ottengo liste dell'utente
 export function get_user_lists(id : number) : List[] {
@@ -63,7 +63,7 @@ export async function validate_user(username : string, password : string) : Prom
 
     // Confronto la password con l'hash e ritorno un token di accesso se combaciano
     try {
-        let match = await auth.compare_hash(password, password_hash)
+        const match = await auth.compare_hash(password, password_hash)
         if (match) {
             // Genera token di accesso
             return auth.generate_access_token(user_obj.id);
@@ -72,7 +72,7 @@ export async function validate_user(username : string, password : string) : Prom
         console.error(err);
         throw err;
     }
-};
+}
 
 // Modifico nome utente
 export function edit_username(edits : any) : void {
@@ -98,7 +98,7 @@ export async function edit_password(edits : any) : Promise<void> {
 
         const match = await auth.compare_hash(edits.old_password, hash);
         if (!match) {
-            let err : any = new Error("Passwords don't match");
+            const err : any = new Error("Passwords don't match");
             err.code = "noMatch";
             throw err;
         }

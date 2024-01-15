@@ -23,7 +23,7 @@ user_router.post(user_endpoint, (req, res) => {
         res.sendStatus(200); // 200 OK
     })
     .catch(err => {
-        res.status(500).send(err.message); // 500 Internal server error
+        res.status(500).type('text').send(err.message); // 500 Internal server error
     })
 });
 user_router.get(`${user_endpoint}/:id`, (req, res) => {

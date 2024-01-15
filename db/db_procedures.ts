@@ -80,11 +80,7 @@ export function edit_username(edits : user_edits) : void {
     const update_query = `UPDATE users SET username="${edits.username}" WHERE id=${edits.id};`;
 
     // Eseguo la query di update
-    try {
-        db.run(update_query);
-    } catch(err) {
-        throw err;
-    }
+    db.run(update_query);
 }
 
 // Modifico password utente
@@ -92,41 +88,33 @@ export async function edit_password(edits : user_edits) : Promise<void> {
     const hash_query = `SELECT password_hash FROM users WHERE id=${edits.id};`;
 
     // Eseguo la query di update
-    try {
-        const hash : string = ((hash_obj : { password_hash : string } = db.query(hash_query).get() as { password_hash : string }) => {
-            return hash_obj.password_hash;
-        })();
+    const hash : string = ((hash_obj : { password_hash : string } = db.query(hash_query).get() as { password_hash : string }) => {
+        return hash_obj.password_hash;
+    })();
 
-        const match = await auth.compare_hash(edits.old_password, hash);
-        if (!match) {
-            const err : Error = new Error("Passwords don't match");
-            err.message = "noMatch";
-            throw err;
-        }
-
-        // Creo l'hash della nuova password
-        const pw_hash = await auth.create_hash(edits.password);
-        const update_query = `UPDATE users SET password_hash="${pw_hash}" WHERE id=${edits.id};`;
-
-        db.query(update_query).run();
-    } catch(err) {
+    const match = await auth.compare_hash(edits.old_password, hash);
+    if (!match) {
+        const err : Error = new Error("Passwords don't match");
+        err.message = "noMatch";
         throw err;
     }
+
+    // Creo l'hash della nuova password
+    const pw_hash = await auth.create_hash(edits.password);
+    const update_query = `UPDATE users SET password_hash="${pw_hash}" WHERE id=${edits.id};`;
+
+    db.query(update_query).run();
 }
 
 // Elimina utente e tutte le sue liste
 export function delete_user(id : number) {
     const delete_query = `DELETE FROM users WHERE id=${id};`;
 
-    try {
-        db.query(delete_query).run();
+    db.query(delete_query).run();
 
-        const lists = get_user_lists(id);
-        for (const list of lists) {
-            delete_list(list.id);
-        }
-    } catch(err) {
-        throw err;
+    const lists = get_user_lists(id);
+    for (const list of lists) {
+        delete_list(list.id);
     }
 }
 
@@ -134,11 +122,7 @@ export function delete_user(id : number) {
 export function add_list(list_name : number, owner_id : number) : void {
     const add_query = `INSERT INTO lists (owner_id, list_name) VALUES (${owner_id}, "${list_name}");`;
 
-    try {
-        db.query(add_query).run();
-    } catch(err) {
-        throw err;
-    }
+    db.query(add_query).run();
 }
 
 // Ottieni lista da DB
